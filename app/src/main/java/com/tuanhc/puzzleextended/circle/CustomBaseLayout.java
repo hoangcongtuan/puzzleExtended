@@ -2,13 +2,13 @@ package com.tuanhc.puzzleextended.circle;
 
 import android.util.Log;
 
-import com.xiaopo.flying.puzzle.custom.CirclePuzzleLayout;
+import com.xiaopo.flying.puzzle.custom.CustomPuzzleLayout;
 
-public abstract class CircleBaseLayout extends CirclePuzzleLayout {
+public abstract class CustomBaseLayout extends CustomPuzzleLayout {
     static final String TAG = "NumberStraightLayout";
     protected int theme;
 
-    public CircleBaseLayout(int theme) {
+    public CustomBaseLayout(int theme) {
         if (theme >= getThemeCount()) {
             Log.e(TAG, "NumberStraightLayout: the most theme count is "
                     + getThemeCount()

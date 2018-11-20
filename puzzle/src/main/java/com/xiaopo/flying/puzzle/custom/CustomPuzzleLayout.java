@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public abstract class CirclePuzzleLayout implements PuzzleLayout {
+public abstract class CustomPuzzleLayout implements PuzzleLayout {
     private RectF bounds;
     private StraightArea outerArea;
 
@@ -33,7 +33,7 @@ public abstract class CirclePuzzleLayout implements PuzzleLayout {
 
     private ArrayList<Step> steps = new ArrayList<>();
 
-    protected CirclePuzzleLayout() {
+    protected CustomPuzzleLayout() {
 
     }
 

@@ -1,7 +1,7 @@
 package com.tuanhc.puzzleextended.circle;
 
-public class CricleLayout extends CircleBaseLayout {
-    public CricleLayout(int theme) {
+public class CustomLayout extends CustomBaseLayout {
+    public CustomLayout(int theme) {
         super(theme);
     }
 

@@ -19,6 +19,7 @@ public class StraightArea implements Area {
   public StraightLine lineBottom;
 
   private Path areaPath = new Path();
+  private Path cutOffPath = null;
   private RectF areaRect = new RectF();
   private PointF[] handleBarPoints = new PointF[2];
 
@@ -112,11 +113,12 @@ public class StraightArea implements Area {
     areaPath.reset();
     areaPath.addRoundRect(getAreaRect(), radian, radian, Path.Direction.CCW);
     Path secondPath = new Path();
-    secondPath.addCircle((left() + right()) / 2, (top() + bottom()) / 2,
-            Math.min(right() / 2 - left() / 2, bottom() / 2 - top() / 2) + paddingTop * 2,
-            Path.Direction.CCW);
+//    secondPath.addCircle((left() + right()) / 2, (top() + bottom()) / 2,
+//            Math.min(right() / 2 - left() / 2, bottom() / 2 - top() / 2) + paddingTop * 2,
+//            Path.Direction.CCW);
 //    areaPath.addCircle();
-    areaPath.op(secondPath, Path.Op.DIFFERENCE);
+    if (cutOffPath != null)
+      areaPath.op(cutOffPath, Path.Op.DIFFERENCE);
     //areaPath.addRect(getAreaRect(), Path.Direction.CCW);
     return areaPath;
   }
@@ -189,6 +191,11 @@ public class StraightArea implements Area {
     this.paddingTop = paddingTop;
     this.paddingRight = paddingRight;
     this.paddingBottom = paddingBottom;
+  }
+
+  @Override
+  public void setCutoffPath(Path path) {
+    this.cutOffPath = new Path(path);
   }
 
   static class AreaComparator implements Comparator<StraightArea> {

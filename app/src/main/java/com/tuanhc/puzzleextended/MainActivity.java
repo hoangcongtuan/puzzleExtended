@@ -4,14 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.tuanhc.puzzleextended.circle.CricleLayout;
+import com.tuanhc.puzzleextended.circle.CustomLayout;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.PuzzlePiece;
 import com.xiaopo.flying.puzzle.PuzzleView;
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 //        puzzleLayout = PuzzleUtils.getPuzzleLayout(1, 2, 0);
-        puzzleLayout = new CricleLayout(0);
+        puzzleLayout = new CustomLayout(0);
         puzzleView.setPuzzleLayout(puzzleLayout);
         puzzleView.setTouchEnable(true);
         puzzleView.setNeedDrawLine(false);

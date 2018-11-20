@@ -57,6 +57,8 @@ public interface Area {
 
   void setPadding(float paddingLeft, float paddingTop, float paddingRight, float paddingBottom);
 
+  void setCutoffPath(Path path);
+
 }
 
 

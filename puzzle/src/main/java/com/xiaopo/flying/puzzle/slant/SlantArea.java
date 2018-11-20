@@ -263,6 +263,11 @@ class SlantArea implements Area {
     this.paddingBottom = paddingBottom;
   }
 
+  @Override
+  public void setCutoffPath(Path path) {
+    // TODO: 11/20/18 Slant cutOffPath
+  }
+
   void updateCornerPoints() {
     intersectionOfLines(leftTop, lineLeft, lineTop);
     intersectionOfLines(leftBottom, lineLeft, lineBottom);

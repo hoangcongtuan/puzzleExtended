@@ -3,6 +3,7 @@ package com.xiaopo.flying.puzzle.custom;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.graphics.Region;
 
 import com.xiaopo.flying.puzzle.Area;
 import com.xiaopo.flying.puzzle.Line;
@@ -189,6 +190,11 @@ public class CircleArea implements Area {
         this.paddingBottom = paddingBottom;
 
         this.padding = paddingBottom;
+    }
+
+    @Override
+    public void setCutoffPath(Path path) {
+        // TODO: 11/20/18 cutOffPath for CircleArea
     }
 
     static class AreaComparator implements Comparator<Area> {

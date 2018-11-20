@@ -17,7 +17,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.xiaopo.flying.puzzle.custom.CirclePuzzleLayout;
+import com.xiaopo.flying.puzzle.custom.CustomPuzzleLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -581,7 +581,7 @@ public class PuzzleView extends View {
   }
 
   private PuzzlePiece findHandlingPiece() {
-    if (puzzleLayout instanceof CirclePuzzleLayout) {
+    if (puzzleLayout instanceof CustomPuzzleLayout) {
       for(int i = puzzlePieces.size() - 1; i >= 0; i--) {
         if (puzzlePieces.get(i).contains(downX, downY))
           return puzzlePieces.get(i);
