@@ -581,19 +581,19 @@ public class PuzzleView extends View {
   }
 
   private PuzzlePiece findHandlingPiece() {
-    if (puzzleLayout instanceof CustomPuzzleLayout) {
-      for(int i = puzzlePieces.size() - 1; i >= 0; i--) {
-        if (puzzlePieces.get(i).contains(downX, downY))
-          return puzzlePieces.get(i);
-      }
-    }
-    else {
+//    if (puzzleLayout instanceof CustomPuzzleLayout) {
+//      for(int i = puzzlePieces.size() - 1; i >= 0; i--) {
+//        if (puzzlePieces.get(i).contains(downX, downY))
+//          return puzzlePieces.get(i);
+//      }
+//    }
+//    else {
       for (PuzzlePiece piece : puzzlePieces) {
         if (piece.contains(downX, downY)) {
           return piece;
         }
       }
-    }
+//    }
     return null;
   }
 

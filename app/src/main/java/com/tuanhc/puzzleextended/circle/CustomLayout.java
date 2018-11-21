@@ -7,7 +7,7 @@ public class CustomLayout extends CustomBaseLayout {
 
     @Override
     public void layout() {
-        makeCircleCenter();
+//        makeCircleCenter();
     }
 
     @Override

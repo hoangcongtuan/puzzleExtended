@@ -3,23 +3,44 @@ package com.xiaopo.flying.puzzle.custom;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Pair;
 
 import com.xiaopo.flying.puzzle.Area;
 import com.xiaopo.flying.puzzle.Line;
 import com.xiaopo.flying.puzzle.PuzzleLayout;
 import com.xiaopo.flying.puzzle.straight.StraightArea;
 import com.xiaopo.flying.puzzle.straight.StraightLine;
+import com.xiaopo.flying.puzzle.straight.StraightUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static com.xiaopo.flying.puzzle.straight.StraightUtils.createLine;
+import static com.xiaopo.flying.puzzle.straight.StraightUtils.cutAreaCross;
+import static com.xiaopo.flying.puzzle.straight.StraightUtils.cutAreaSpiral;
+
 
 public abstract class CustomPuzzleLayout implements PuzzleLayout {
+    public static final int TOP_LEFT = 0;
+    public static final int TOP_CENTER = 1;
+    public static final int TOP_RIGHT = 3;
+    public static final int CENTER_LEFT = 4;
+    public static final int CENTER_CENTER = 5;
+    public static final int CENTER_RIGHT = 6;
+    public static final int BOTTOM_LEFT = 7;
+    public static final int BOTTOM_CENTER = 8;
+    public static final int BOTTOM_RIGHT = 9;
+
+    public static final int SHAPE_CIRCLE = 0;
+    public static final int SHAPE_SQUARE = 1;
+    public static final int SHAPE_START = 2;
+    public static final int SHAPE_HEART = 3;
+
     private RectF bounds;
     private StraightArea outerArea;
 
-//    private List<StraightArea> areas = new ArrayList<>();
     private List<Area> areas = new ArrayList<>();
     private List<Line> lines = new ArrayList<>();
     private List<Line> outerLines = new ArrayList<>(4);
@@ -28,8 +49,7 @@ public abstract class CustomPuzzleLayout implements PuzzleLayout {
     private float radian;
     private int color = Color.WHITE;
 
-//    private Comparator<StraightArea> areaComparator = new StraightArea.AreaComparator();
-    private Comparator<Area> areaComparator = new CircleArea.AreaComparator();
+    private Comparator<Area> areaComparator = new CustomArea.AreaComparator();
 
     private ArrayList<Step> steps = new ArrayList<>();
 
@@ -39,6 +59,7 @@ public abstract class CustomPuzzleLayout implements PuzzleLayout {
 
     @Override public void setOuterBounds(RectF bounds) {
         reset();
+
         this.bounds = bounds;
 
         PointF one = new PointF(bounds.left, bounds.top);
@@ -131,120 +152,164 @@ public abstract class CustomPuzzleLayout implements PuzzleLayout {
         return padding;
     }
 
-    protected List<Area> makeCircleCenter() {
-        CircleArea area = new CircleArea(outerArea.getAreaRect());
+    protected void addShape(int shape, int align, float ratio) {
+        float size = ratio * Math.min(width(), height());
+        PointF center = new PointF(width() / 2, height() / 2);
+        switch (align) {
+            case TOP_LEFT:
+                center.offset(-width() / 4, -height() / 4);
+                break;
+            case TOP_CENTER:
+                center.offset(0, -height() / 4);
+                break;
+            case TOP_RIGHT:
+                center.offset(width() / 4, -height() / 4);
+                break;
+            case CENTER_LEFT:
+                center.offset(-width() / 4, 0);
+                break;
+            case CENTER_CENTER:
+                center.offset(0, 0);
+                break;
+            case CENTER_RIGHT:
+                center.offset(width() / 4, 0);
+                break;
+            case BOTTOM_LEFT:
+                center.offset(-width() / 4, height() / 4);
+                break;
+            case BOTTOM_CENTER:
+                center.offset(0, height() / 4);
+                break;
+            case BOTTOM_RIGHT:
+                center.offset(width() / 4, height() / 4);
+                break;
+        }
+
+        RectF rectF =
+                new RectF(center.x - size / 2, center.y - size / 2, center.x + size / 2, center.y + size / 2);
+
+        Area area = null;
+        switch (shape) {
+            case SHAPE_CIRCLE:
+                area = new CircleArea(rectF);
+                break;
+
+        }
+        if (area == null)
+            return;
         areas.add(area);
-
+        for(int i = 0; i < areas.size() - 1; i++) {
+            areas.get(i).setCutoffPath(area.getAreaPath());
+        }
         updateLineLimit();
-//        sortAreas();
-
-        return areas;
+        sortAreas();
     }
 
-//    protected void addLine(int position, Line.Direction direction, float ratio) {
-//        StraightArea area = areas.get(position);
-//        addLine(area, direction, ratio);
-//
-//        Step step = new Step();
-//        step.type = Step.ADD_LINE;
-//        step.direction = direction == Line.Direction.HORIZONTAL ? 0 : 1;
-//        step.position = position;
-//        steps.add(step);
-//    }
+    protected void addLine(int position, Line.Direction direction, float ratio) {
+//        Area area = areas.get(position);
+        StraightArea area = (StraightArea) areas.get(position);
+        addLine(area, direction, ratio);
 
-//    private List<StraightArea> addLine(StraightArea area, Line.Direction direction, float ratio) {
-//        areas.remove(area);
-//        StraightLine line = createLine(area, direction, ratio);
-//        lines.add(line);
-//
-//        List<StraightArea> increasedArea = StraightUtils.cutArea(area, line);
-//        areas.addAll(increasedArea);
-//
-//        updateLineLimit();
-//        sortAreas();
-//
-//        return increasedArea;
-//    }
+        Step step = new Step();
+        step.type = Step.ADD_LINE;
+        step.direction = direction == Line.Direction.HORIZONTAL ? 0 : 1;
+        step.position = position;
+        steps.add(step);
+    }
 
-//    protected void cutAreaEqualPart(int position, int part, Line.Direction direction) {
-//        StraightArea temp = areas.get(position);
-//        for (int i = part; i > 1; i--) {
-//            temp = addLine(temp, direction, (float) (i - 1) / i).get(0);
-//        }
-//
-//        Step step = new Step();
-//        step.type = Step.CUT_EQUAL_PART_TWO;
-//        step.part = part;
-//        step.position = position;
-//        step.direction = direction == Line.Direction.HORIZONTAL ? 0 : 1;
-//        steps.add(step);
-//    }
+    private List<StraightArea> addLine(StraightArea area, Line.Direction direction, float ratio) {
+        areas.remove(area);
+        StraightLine line = createLine(area, direction, ratio);
+        lines.add(line);
 
-//    protected void addCross(int position, float ratio) {
-//        addCross(position, ratio, ratio);
-//    }
+        List<StraightArea> increasedArea = StraightUtils.cutArea(area, line);
+        areas.addAll(increasedArea);
 
-//    protected void addCross(int position, float horizontalRatio, float verticalRatio) {
-//        StraightArea area = areas.get(position);
-//        areas.remove(area);
-//        StraightLine horizontal = createLine(area, Line.Direction.HORIZONTAL, horizontalRatio);
-//        StraightLine vertical = createLine(area, Line.Direction.VERTICAL, verticalRatio);
-//        lines.add(horizontal);
-//        lines.add(vertical);
-//
-//        List<StraightArea> newAreas = cutAreaCross(area, horizontal, vertical);
-//        areas.addAll(newAreas);
-//
-//        updateLineLimit();
-//        sortAreas();
-//
-//        Step step = new Step();
-//        step.type = Step.ADD_CROSS;
-//        step.position = position;
-//        steps.add(step);
-//    }
+        updateLineLimit();
+        sortAreas();
 
-//    protected void cutAreaEqualPart(int position, int hSize, int vSize) {
-//        StraightArea area = areas.get(position);
-//        areas.remove(area);
-//        Pair<List<StraightLine>, List<StraightArea>> increased =
-//                StraightUtils.cutArea(area, hSize, vSize);
-//        List<StraightLine> newLines = increased.first;
-//        List<StraightArea> newAreas = increased.second;
-//
-//        lines.addAll(newLines);
-//        areas.addAll(newAreas);
-//
-//        updateLineLimit();
-//        sortAreas();
-//
-//        Step step = new Step();
-//        step.type = Step.CUT_EQUAL_PART_ONE;
-//        step.position = position;
-//        step.hSize = hSize;
-//        step.vSize = vSize;
-//        steps.add(step);
-//    }
+        return increasedArea;
+    }
 
-//    protected void cutSpiral(int position) {
-//        StraightArea area = areas.get(position);
-//        areas.remove(area);
-//        Pair<List<StraightLine>, List<StraightArea>> spilt = cutAreaSpiral(area);
-//
-//        lines.addAll(spilt.first);
-//        areas.addAll(spilt.second);
-//
-//        updateLineLimit();
-//        sortAreas();
-//
-//        Step step = new Step();
-//        step.type = Step.CUT_SPIRAL;
-//        step.position = position;
-//        steps.add(step);
-//    }
+    protected void cutAreaEqualPart(int position, int part, Line.Direction direction) {
+        StraightArea temp = (StraightArea) areas.get(position);
+        for (int i = part; i > 1; i--) {
+            temp = addLine(temp, direction, (float) (i - 1) / i).get(0);
+        }
+
+        Step step = new Step();
+        step.type = Step.CUT_EQUAL_PART_TWO;
+        step.part = part;
+        step.position = position;
+        step.direction = direction == Line.Direction.HORIZONTAL ? 0 : 1;
+        steps.add(step);
+    }
+
+    protected void addCross(int position, float ratio) {
+        addCross(position, ratio, ratio);
+    }
+
+    protected void addCross(int position, float horizontalRatio, float verticalRatio) {
+        StraightArea area = (StraightArea) areas.get(position);
+        areas.remove(area);
+        StraightLine horizontal = createLine(area, Line.Direction.HORIZONTAL, horizontalRatio);
+        StraightLine vertical = createLine(area, Line.Direction.VERTICAL, verticalRatio);
+        lines.add(horizontal);
+        lines.add(vertical);
+
+        List<StraightArea> newAreas = cutAreaCross(area, horizontal, vertical);
+        areas.addAll(newAreas);
+
+        updateLineLimit();
+        sortAreas();
+
+        Step step = new Step();
+        step.type = Step.ADD_CROSS;
+        step.position = position;
+        steps.add(step);
+    }
+
+    protected void cutAreaEqualPart(int position, int hSize, int vSize) {
+        StraightArea area = (StraightArea) areas.get(position);
+        areas.remove(area);
+        Pair<List<StraightLine>, List<StraightArea>> increased =
+                StraightUtils.cutArea(area, hSize, vSize);
+        List<StraightLine> newLines = increased.first;
+        List<StraightArea> newAreas = increased.second;
+
+        lines.addAll(newLines);
+        areas.addAll(newAreas);
+
+        updateLineLimit();
+        sortAreas();
+
+        Step step = new Step();
+        step.type = Step.CUT_EQUAL_PART_ONE;
+        step.position = position;
+        step.hSize = hSize;
+        step.vSize = vSize;
+        steps.add(step);
+    }
+
+    protected void cutSpiral(int position) {
+        StraightArea area = (StraightArea) areas.get(position);
+        areas.remove(area);
+        Pair<List<StraightLine>, List<StraightArea>> spilt = cutAreaSpiral(area);
+
+        lines.addAll(spilt.first);
+        areas.addAll(spilt.second);
+
+        updateLineLimit();
+        sortAreas();
+
+        Step step = new Step();
+        step.type = Step.CUT_SPIRAL;
+        step.position = position;
+        steps.add(step);
+    }
 
     @Override public void sortAreas() {
-//        Collections.sort(areas, areaComparator);
+        Collections.sort(areas, areaComparator);
     }
 
     private void updateLineLimit() {

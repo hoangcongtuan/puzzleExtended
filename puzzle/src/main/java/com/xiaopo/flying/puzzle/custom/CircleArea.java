@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class CircleArea implements Area {
+public class CircleArea extends CustomArea {
 
     private PointF pCenter;
     private float radius;
@@ -20,6 +20,7 @@ public class CircleArea implements Area {
 
     private Path areaPath = new Path();
     private RectF areaRect = new RectF();
+    private Region areaRegion = new Region();
     private PointF[] handleBarPoints = new PointF[2];
 
     private float paddingLeft;
@@ -98,7 +99,8 @@ public class CircleArea implements Area {
     }
 
     @Override public boolean contains(float x, float y) {
-        return getAreaRect().contains(x, y);
+//        return getAreaRect().contains(x, y);
+        return getAreaRegion().contains((int)x, (int)y);
     }
 
     @Override public boolean contains(Line line) {
@@ -120,6 +122,15 @@ public class CircleArea implements Area {
     @Override public RectF getAreaRect() {
         areaRect.set(left(), top(), right(), bottom());
         return areaRect;
+    }
+
+    @Override
+    public Region getAreaRegion() {
+        RectF rectF = new RectF();
+        Path path = getAreaPath();
+        path.computeBounds(rectF, true);
+        areaRegion.setPath(path, new Region((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom));
+        return areaRegion;
     }
 
     @Override public List<Line> getLines() {
@@ -195,23 +206,5 @@ public class CircleArea implements Area {
     @Override
     public void setCutoffPath(Path path) {
         // TODO: 11/20/18 cutOffPath for CircleArea
-    }
-
-    static class AreaComparator implements Comparator<Area> {
-        @Override public int compare(Area lhs, Area rhs) {
-            if (lhs.top() < rhs.top()) {
-                return -1;
-            } else if (lhs.top() == rhs.top()) {
-                if (lhs.left() < rhs.left()) {
-                    return -1;
-                } else if (lhs.left() == rhs.left()) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            } else {
-                return 1;
-            }
-        }
     }
 }

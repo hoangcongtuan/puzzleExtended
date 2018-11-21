@@ -3,6 +3,8 @@ package com.xiaopo.flying.puzzle;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.graphics.Region;
+
 import java.util.List;
 
 /**
@@ -36,6 +38,8 @@ public interface Area {
   Path getAreaPath();
 
   RectF getAreaRect();
+
+  Region getAreaRegion();
 
   List<Line> getLines();
 

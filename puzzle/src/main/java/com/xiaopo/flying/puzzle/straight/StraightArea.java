@@ -3,6 +3,8 @@ package com.xiaopo.flying.puzzle.straight;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.graphics.Region;
+
 import com.xiaopo.flying.puzzle.Area;
 import com.xiaopo.flying.puzzle.Line;
 import java.util.Arrays;
@@ -21,6 +23,7 @@ public class StraightArea implements Area {
   private Path areaPath = new Path();
   private Path cutOffPath = null;
   private RectF areaRect = new RectF();
+  private Region areaRegion = new Region();
   private PointF[] handleBarPoints = new PointF[2];
 
   private float paddingLeft;
@@ -102,7 +105,8 @@ public class StraightArea implements Area {
   }
 
   @Override public boolean contains(float x, float y) {
-    return getAreaRect().contains(x, y);
+    //        return getAreaRect().contains(x, y);
+    return getAreaRegion().contains((int)x, (int)y);
   }
 
   @Override public boolean contains(Line line) {
@@ -127,6 +131,14 @@ public class StraightArea implements Area {
     areaRect.set(left(), top(), right(), bottom());
     return areaRect;
   }
+
+  @Override
+  public Region getAreaRegion() {
+    RectF rectF = new RectF();
+    Path path = getAreaPath();
+    path.computeBounds(rectF, true);
+    areaRegion.setPath(path, new Region((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom));
+    return areaRegion;  }
 
   @Override public List<Line> getLines() {
     return Arrays.asList((Line) lineLeft, lineTop, lineRight, lineBottom);

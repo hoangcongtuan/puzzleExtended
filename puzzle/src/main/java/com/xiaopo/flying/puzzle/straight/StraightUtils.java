@@ -9,9 +9,9 @@ import java.util.List;
 /**
  * @author wupanjie
  */
-class StraightUtils {
-  static StraightLine createLine(final StraightArea area, final Line.Direction direction,
-      final float ratio) {
+public class StraightUtils {
+  public static StraightLine createLine(final StraightArea area, final Line.Direction direction,
+                                        final float ratio) {
     PointF one = new PointF();
     PointF two = new PointF();
     if (direction == Line.Direction.HORIZONTAL) {
@@ -45,7 +45,7 @@ class StraightUtils {
     return line;
   }
 
-  static List<StraightArea> cutArea(final StraightArea area, final StraightLine line) {
+  public static List<StraightArea> cutArea(final StraightArea area, final StraightLine line) {
     List<StraightArea> list = new ArrayList<>();
     if (line.direction() == Line.Direction.HORIZONTAL) {
       StraightArea one = new StraightArea(area);
@@ -68,8 +68,8 @@ class StraightUtils {
     return list;
   }
 
-  static Pair<List<StraightLine>, List<StraightArea>> cutArea(final StraightArea area,
-      final int horizontalSize, final int verticalSize) {
+  public static Pair<List<StraightLine>, List<StraightArea>> cutArea(final StraightArea area,
+                                                                     final int horizontalSize, final int verticalSize) {
     List<StraightArea> areaList = new ArrayList<>();
     List<StraightLine> horizontalLines = new ArrayList<>(horizontalSize);
 
@@ -124,8 +124,8 @@ class StraightUtils {
     return new Pair<>(lines, areaList);
   }
 
-  static List<StraightArea> cutAreaCross(final StraightArea area, final StraightLine horizontal,
-      final StraightLine vertical) {
+  public static List<StraightArea> cutAreaCross(final StraightArea area, final StraightLine horizontal,
+                                                final StraightLine vertical) {
     List<StraightArea> list = new ArrayList<>();
 
     StraightArea one = new StraightArea(area);
@@ -151,7 +151,7 @@ class StraightUtils {
     return list;
   }
 
-  static Pair<List<StraightLine>,List<StraightArea>> cutAreaSpiral(final StraightArea area){
+  public static Pair<List<StraightLine>,List<StraightArea>> cutAreaSpiral(final StraightArea area){
     List<StraightLine> lines = new ArrayList<>();
     List<StraightArea> areas = new ArrayList<>();
 
